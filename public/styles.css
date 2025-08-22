@@ -30,3 +30,43 @@ body.dark {
   background: #1e1e1e;
   color: #fff;
 }
+
+.doc-filters input,
+.doc-filters select {
+  margin-right: 8px;
+}
+
+.doc-table {
+  display: flex;
+}
+
+.doc-table table {
+  flex: 1;
+  border-collapse: collapse;
+}
+
+.doc-table th,
+.doc-table td {
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+}
+
+.doc-table tr.selected {
+  background: #e0e0e0;
+}
+
+.doc-detail {
+  width: 300px;
+  padding-left: 16px;
+  border-left: 1px solid #ccc;
+}
+
+.preview {
+  height: 200px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}

@@ -156,20 +156,107 @@ function Users() {
 
 function Documents() {
   const [docs, setDocs] = React.useState([]);
+  const [search, setSearch] = React.useState('');
+  const [type, setType] = React.useState('');
+  const [dg, setDg] = React.useState('all');
+  const [minConf, setMinConf] = React.useState(0);
+  const [selected, setSelected] = React.useState(null);
+
   React.useEffect(() => {
     fetch('/api/documents').then(r => r.json()).then(setDocs);
   }, []);
+
+  const types = Array.from(new Set(docs.map(d => d.type)));
+
+  const filtered = docs.filter(d => {
+    const matchesSearch = d.fileName.toLowerCase().includes(search.toLowerCase());
+    const matchesType = type ? d.type === type : true;
+    const matchesDg = dg === 'all' ? true : d.dg === (dg === 'true');
+    const matchesConf = d.confidence * 100 >= minConf;
+    return matchesSearch && matchesType && matchesDg && matchesConf;
+  });
+
   return (
-    <div>
+    <div className="documents">
       <h2>Processed Documents</h2>
-      <table>
-        <thead><tr><th>Source</th><th>Page</th><th>Type</th><th>DG</th><th>Confidence</th></tr></thead>
-        <tbody>
-          {docs.map(d => (
-            <tr key={d.id}><td>{d.fileName}</td><td>{d.page}</td><td>{d.type}</td><td>{d.dg ? 'Yes' : 'No'}</td><td>{(d.confidence*100).toFixed(1)}%</td></tr>
+      <div className="doc-filters">
+        <input
+          placeholder="Search file name"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <select value={type} onChange={e => setType(e.target.value)}>
+          <option value="">All Types</option>
+          {types.map(t => (
+            <option key={t}>{t}</option>
           ))}
-        </tbody>
-      </table>
+        </select>
+        <select value={dg} onChange={e => setDg(e.target.value)}>
+          <option value="all">DG: All</option>
+          <option value="true">DG: Yes</option>
+          <option value="false">DG: No</option>
+        </select>
+        <label className="confidence">
+          Min confidence: {minConf}%
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={minConf}
+            onChange={e => setMinConf(parseInt(e.target.value))}
+          />
+        </label>
+      </div>
+      <div className="doc-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Page</th>
+              <th>Type</th>
+              <th>DG</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(d => (
+              <tr
+                key={d.id}
+                onClick={() => setSelected(d)}
+                className={selected && selected.id === d.id ? 'selected' : ''}
+              >
+                <td>{d.fileName}</td>
+                <td>{d.page}</td>
+                <td>{d.type}</td>
+                <td>{d.dg ? 'Yes' : 'No'}</td>
+                <td>{(d.confidence * 100).toFixed(1)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {selected && (
+          <div className="doc-detail">
+            <h3>
+              {selected.fileName} - page {selected.page}
+            </h3>
+            <div className="preview">
+              {selected.preview ? (
+                <img src={selected.preview} alt="preview" />
+              ) : (
+                <div className="placeholder">No preview</div>
+              )}
+            </div>
+            <h4>Extracted Fields</h4>
+            <ul>
+              {Object.entries(selected.fields || {}).map(([k, v]) => (
+                <li key={k}>
+                  <strong>{k}:</strong> {v.value} ({(v.confidence * 100).toFixed(1)}%)
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

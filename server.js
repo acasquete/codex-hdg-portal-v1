@@ -18,8 +18,36 @@ let users = [
 ];
 
 let documents = [
-  { id: 1, fileName: 'invoice1.pdf', page: 1, type: 'Invoice', dg: false, confidence: 0.95 },
-  { id: 2, fileName: 'msds.pdf', page: 1, type: 'Safety Sheet', dg: true, confidence: 0.86 }
+  {
+    id: 1,
+    fileName: 'invoice1.pdf',
+    page: 1,
+    type: 'Invoice',
+    dg: false,
+    confidence: 0.95,
+    fields: {
+      supplier: { value: 'ACME Corp', confidence: 0.93 },
+      date: { value: '2024-05-01', confidence: 0.88 },
+      items: { value: 'Widgets', confidence: 0.82 },
+      total: { value: '$1,000', confidence: 0.91 },
+      un: { value: 'UN0000', confidence: 0.1 }
+    },
+    preview: ''
+  },
+  {
+    id: 2,
+    fileName: 'msds.pdf',
+    page: 1,
+    type: 'Safety Sheet',
+    dg: true,
+    confidence: 0.86,
+    fields: {
+      supplier: { value: 'Contoso Chemicals', confidence: 0.9 },
+      un: { value: 'UN1234', confidence: 0.95 },
+      hazard: { value: 'Flammable', confidence: 0.84 }
+    },
+    preview: ''
+  }
 ];
 
 let reviewQueue = [
@@ -88,7 +116,9 @@ app.post('/api/ingest', upload.single('file'), (req, res) => {
       page: 1,
       type: 'Uploaded',
       dg: false,
-      confidence: 0
+      confidence: 0,
+      fields: {},
+      preview: ''
     };
     documents.push(doc);
     kafkaStatus.messages += 1;
