@@ -7,18 +7,22 @@ function Sidebar() {
   }, [dark]);
 
   return (
-    <div className="sidebar">
-      <Link to="/">Dashboard</Link>
-      <Link to="/ingestion">Ingestion</Link>
-      <Link to="/documents">Processed Documents</Link>
-      <Link to="/schema">Schema Configuration</Link>
-      <Link to="/review">Review Queue</Link>
-      <Link to="/users">Users</Link>
-      <Link to="/analytics">Analytics</Link>
-      <Link to="/config">Configuration</Link>
+    <nav className="sidebar" aria-label="Main navigation">
+      <ul>
+        <li><Link to="/">Dashboard</Link></li>
+        <li><Link to="/ingestion">Ingestion</Link></li>
+        <li><Link to="/documents">Processed Documents</Link></li>
+        <li><Link to="/schema">Schema Configuration</Link></li>
+        <li><Link to="/review">Review Queue</Link></li>
+        <li><Link to="/users">Users</Link></li>
+        <li><Link to="/analytics">Analytics</Link></li>
+        <li><Link to="/config">Configuration</Link></li>
+      </ul>
       <hr />
-      <button onClick={() => setDark(d => !d)}>{dark ? 'Light' : 'Dark'} Mode</button>
-    </div>
+      <button onClick={() => setDark(d => !d)} aria-label="Toggle color mode">
+        {dark ? 'Light' : 'Dark'} Mode
+      </button>
+    </nav>
   );
 }
 
@@ -181,17 +185,18 @@ function Documents() {
       <h2>Processed Documents</h2>
       <div className="doc-filters">
         <input
+          aria-label="Search file name"
           placeholder="Search file name"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <select value={type} onChange={e => setType(e.target.value)}>
+        <select aria-label="Filter by type" value={type} onChange={e => setType(e.target.value)}>
           <option value="">All Types</option>
           {types.map(t => (
             <option key={t}>{t}</option>
           ))}
         </select>
-        <select value={dg} onChange={e => setDg(e.target.value)}>
+        <select aria-label="Filter by DG" value={dg} onChange={e => setDg(e.target.value)}>
           <option value="all">DG: All</option>
           <option value="true">DG: Yes</option>
           <option value="false">DG: No</option>
@@ -206,6 +211,17 @@ function Documents() {
             onChange={e => setMinConf(parseInt(e.target.value))}
           />
         </label>
+        <button
+          onClick={() => {
+            setSearch('');
+            setType('');
+            setDg('all');
+            setMinConf(0);
+          }}
+          aria-label="Clear document filters"
+        >
+          Clear Filters
+        </button>
       </div>
       <div className="doc-table">
         <table>
@@ -222,7 +238,11 @@ function Documents() {
             {filtered.map(d => (
               <tr
                 key={d.id}
+                tabIndex="0"
                 onClick={() => setSelected(d)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') setSelected(d);
+                }}
                 className={selected && selected.id === d.id ? 'selected' : ''}
               >
                 <td>{d.fileName}</td>

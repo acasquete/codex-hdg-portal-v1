@@ -1,6 +1,22 @@
+:root {
+  --bg: #fff;
+  --text: #000;
+  --sidebar-bg: #f3f2f1;
+  --link: #333;
+}
+
+body.dark {
+  --bg: #1e1e1e;
+  --text: #fff;
+  --sidebar-bg: #2d2d2d;
+  --link: #ddd;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .app {
@@ -10,25 +26,29 @@ body {
 
 .sidebar {
   width: 200px;
-  background: #f3f2f1;
+  background: var(--sidebar-bg);
   padding: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin: 8px 0;
 }
 
 .sidebar a {
   display: block;
-  margin: 8px 0;
   text-decoration: none;
-  color: #333;
+  color: var(--link);
 }
 
 .content {
   flex: 1;
   padding: 20px;
-}
-
-body.dark {
-  background: #1e1e1e;
-  color: #fff;
 }
 
 .doc-filters input,
@@ -55,6 +75,10 @@ body.dark {
   background: #e0e0e0;
 }
 
+.doc-table tr:focus {
+  outline: 2px solid #0078d4;
+}
+
 .doc-detail {
   width: 300px;
   padding-left: 16px;
@@ -69,4 +93,21 @@ body.dark {
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+  }
+  .sidebar ul {
+    display: flex;
+  }
+  .sidebar li {
+    margin: 0 8px;
+  }
 }
