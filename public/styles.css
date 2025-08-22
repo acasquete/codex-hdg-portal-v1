@@ -1,0 +1,32 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background: #f3f2f1;
+  padding: 10px;
+}
+
+.sidebar a {
+  display: block;
+  margin: 8px 0;
+  text-decoration: none;
+  color: #333;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+body.dark {
+  background: #1e1e1e;
+  color: #fff;
+}
